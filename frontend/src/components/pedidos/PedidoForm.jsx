@@ -76,6 +76,7 @@ export const PedidoForm = ({ pedidoEdit, onSubmitPedido }) => {
       />
 
       <TextField
+        fullWidth
         select
         label="Cliente"
         name="clienteId"

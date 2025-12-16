@@ -4,6 +4,7 @@ import { Box, Typography } from '@mui/material'
 import { AppSnackbar } from '../components/common/AppSnackbar'
 import { ConfirmDialog } from '../components/common/ConfirmDialog'
 import { Loading } from '../components/common/Loading'
+import { ErrorState } from '../components/common/ErrorState'
 
 import { PedidoForm } from '../components/pedidos/PedidoForm'
 import { PedidoList } from '../components/pedidos/PedidoList'
@@ -16,35 +17,38 @@ import {
 } from '../api/PedidosApi'
 
 export const PedidosPage = () => {
+  /* -------------------- Data -------------------- */
   const [pedidos, setPedidos] = useState([])
   const [pedidoEdit, setPedidoEdit] = useState(null)
-  const [loading, setLoading] = useState(false)
 
-  /* ---------------- Snackbar ---------------- */
+  /* -------------------- States UI -------------------- */
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  /* -------------------- Snackbar -------------------- */
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
     severity: 'success'
   })
 
-  /* ---------------- Confirm ---------------- */
+  /* -------------------- Confirm Dialog -------------------- */
   const [confirm, setConfirm] = useState({
     open: false,
     pedidoId: null
   })
 
-  /* ---------------- Load ---------------- */
+  /* -------------------- Load -------------------- */
   const loadPedidos = async () => {
-    setLoading(true)
     try {
+      setLoading(true)
+      setError(null)
+
       const res = await getPedidos()
       setPedidos(res.data ?? [])
-    } catch (error) {
-      setSnackbar({
-        open: true,
-        message: 'Error al cargar pedidos',
-        severity: 'error'
-      })
+    } catch (err) {
+      console.error(err)
+      setError('No se pudieron cargar los pedidos')
     } finally {
       setLoading(false)
     }
@@ -54,7 +58,7 @@ export const PedidosPage = () => {
     loadPedidos()
   }, [])
 
-  /* ---------------- Create / Update ---------------- */
+  /* -------------------- Create / Update -------------------- */
   const handleSubmitPedido = async (pedido) => {
     try {
       if (pedido.id) {
@@ -84,7 +88,7 @@ export const PedidosPage = () => {
     }
   }
 
-  /* ---------------- Delete ---------------- */
+  /* -------------------- Delete -------------------- */
   const handleDeleteRequest = (id) => {
     setConfirm({ open: true, pedidoId: id })
   }
@@ -109,27 +113,36 @@ export const PedidosPage = () => {
     }
   }
 
+  /* -------------------- Render -------------------- */
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        Pedidos
+        Pedidos (Cocina)
       </Typography>
 
-      <PedidoForm
-        onSubmitPedido={handleSubmitPedido}
-        pedidoEdit={pedidoEdit}
-      />
+      {/* LOADING */}
+      {loading && <Loading />}
 
-      {loading ? (
-        <Loading />
-      ) : (
-        <PedidoList
-          pedidos={pedidos}
-          onEdit={setPedidoEdit}
-          onDelete={handleDeleteRequest}
-        />
+      {/* ERROR */}
+      {error && <ErrorState message={error} />}
+
+      {/* CONTENIDO OK */}
+      {!loading && !error && (
+        <>
+          <PedidoForm
+            pedidoEditando={pedidoEdit}
+            onSaved={handleSubmitPedido}
+          />
+
+          <PedidoList
+            pedidos={pedidos}
+            onEdit={setPedidoEdit}
+            onDelete={handleDeleteRequest}
+          />
+        </>
       )}
 
+      {/* SNACKBAR */}
       <AppSnackbar
         open={snackbar.open}
         message={snackbar.message}
@@ -137,6 +150,7 @@ export const PedidosPage = () => {
         onClose={() => setSnackbar({ ...snackbar, open: false })}
       />
 
+      {/* CONFIRM */}
       <ConfirmDialog
         open={confirm.open}
         text="¿Eliminar pedido?"

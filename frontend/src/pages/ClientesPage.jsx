@@ -1,14 +1,29 @@
 import { useEffect, useState } from 'react'
 import { Box, Typography } from '@mui/material'
+
 import { AppSnackbar } from '../components/common/AppSnackbar'
 import { ConfirmDialog } from '../components/common/ConfirmDialog'
+import { Loading } from '../components/common/Loading'
+import { ErrorState } from '../components/common/ErrorState'
+
 import { ClienteForm } from '../components/clientes/ClienteForm'
 import { ClientesList } from '../components/clientes/ClientesList'
-import { getClientes, createCliente, updateCliente, deleteCliente } from '../api/ClientesApi'
+
+import {
+  getClientes,
+  createCliente,
+  updateCliente,
+  deleteCliente
+} from '../api/ClientesApi'
 
 export const ClientesPage = () => {
+  /* -------------------- Data -------------------- */
   const [clientes, setClientes] = useState([])
   const [clienteEdit, setClienteEdit] = useState(null)
+
+  /* -------------------- States UI -------------------- */
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   /* -------------------- Snackbar -------------------- */
   const [snackbar, setSnackbar] = useState({
@@ -25,8 +40,18 @@ export const ClientesPage = () => {
 
   /* -------------------- Load -------------------- */
   const loadClientes = async () => {
-    const res = await getClientes()
-    setClientes(res.data ?? [])
+    try {
+      setLoading(true)
+      setError(null)
+
+      const res = await getClientes()
+      setClientes(res.data ?? [])
+    } catch (err) {
+      console.error(err)
+      setError('No se pudieron cargar los clientes')
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -94,17 +119,29 @@ export const ClientesPage = () => {
         Clientes
       </Typography>
 
-      <ClienteForm
-        onSubmitCliente={handleSubmitCliente}
-        clienteEdit={clienteEdit}
-      />
+      {/* LOADING */}
+      {loading && <Loading />}
 
-      <ClientesList
-        clientes={clientes}
-        onEdit={setClienteEdit}
-        onDelete={handleDeleteRequest}
-      />
+      {/* ERROR */}
+      {error && <ErrorState message={error} />}
 
+      {/* CONTENIDO OK */}
+      {!loading && !error && (
+        <>
+          <ClienteForm
+            onSubmitCliente={handleSubmitCliente}
+            clienteEdit={clienteEdit}
+          />
+
+          <ClientesList
+            clientes={clientes}
+            onEdit={setClienteEdit}
+            onDelete={handleDeleteRequest}
+          />
+        </>
+      )}
+
+      {/* SNACKBAR */}
       <AppSnackbar
         open={snackbar.open}
         message={snackbar.message}
@@ -112,6 +149,7 @@ export const ClientesPage = () => {
         onClose={() => setSnackbar({ ...snackbar, open: false })}
       />
 
+      {/* CONFIRM */}
       <ConfirmDialog
         open={confirm.open}
         text="¿Eliminar cliente y todos sus pedidos?"
