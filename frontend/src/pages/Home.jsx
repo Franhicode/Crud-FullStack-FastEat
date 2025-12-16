@@ -1,58 +1,24 @@
-import { Box, Button, Card, CardContent, Grid, Typography } from '@mui/material'
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Typography, Box } from '@mui/material'
+import { getPedidos } from '../api/PedidosApi'
+import { PedidosTable } from '../components/pedidos/PedidosTable'
 
 export const Home = () => {
+  const [pedidos, setPedidos] = useState([])
+
+  useEffect(() => {
+    getPedidos()
+      .then(res => setPedidos(res.data ?? []))
+      .catch(err => console.error(err))
+  }, [])
+
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        Bienvenido a FastEat 🍔
+        Orden de pedidos en tiempo real
       </Typography>
 
-      <Typography variant="body1" sx={{ mb: 4 }}>
-        Sistema de gestión de clientes y pedidos.
-      </Typography>
-
-      <Grid container spacing={3}>
-        {/* CLIENTES */}
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6">Clientes</Typography>
-              <Typography variant="body2" sx={{ mb: 2 }}>
-                Gestión completa de clientes registrados.
-              </Typography>
-
-              <Button
-                variant="contained"
-                component={Link}
-                to="/clientes"
-              >
-                Ver clientes
-              </Button>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* PEDIDOS */}
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6">Pedidos</Typography>
-              <Typography variant="body2" sx={{ mb: 2 }}>
-                Administración de pedidos y órdenes.
-              </Typography>
-
-              <Button
-                variant="contained"
-                component={Link}
-                to="/pedidos"
-              >
-                Ver pedidos
-              </Button>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+      <PedidosTable pedidos={pedidos} />
     </Box>
   )
 }

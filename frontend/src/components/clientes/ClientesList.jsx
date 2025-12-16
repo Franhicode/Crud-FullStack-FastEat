@@ -1,7 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableRow, Button, TextField } from '@mui/material'
 import { useState } from 'react'
 
-export const ClientesList = ({ clientes = [], onDelete }) => {
+export const ClientesList = ({ clientes = [], onDelete, onEdit }) => {
   const [busqueda, setBusqueda] = useState('')
 
   const filtrados = clientes.filter(
@@ -16,7 +16,6 @@ export const ClientesList = ({ clientes = [], onDelete }) => {
         label="Buscar cliente"
         fullWidth
         sx={{ mb: 2 }}
-        value={busqueda}
         onChange={(e) => setBusqueda(e.target.value)}
       />
 
@@ -40,6 +39,15 @@ export const ClientesList = ({ clientes = [], onDelete }) => {
               <TableCell>{c.telefono}</TableCell>
               <TableCell>
                 <Button
+                  size="small"
+                  onClick={() => onEdit(c)}
+                  sx={{ mr: 1 }}
+                >
+                  Editar
+                </Button>
+
+                <Button
+                  size="small"
                   color="error"
                   onClick={() => onDelete(c.id)}
                 >

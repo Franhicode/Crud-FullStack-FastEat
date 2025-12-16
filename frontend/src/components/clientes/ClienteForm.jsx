@@ -1,7 +1,7 @@
 import { Button, TextField, Box } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-export const ClienteForm = ({ onClienteCreado }) => {
+export const ClienteForm = ({ onSubmitCliente, clienteEdit }) => {
   const [cliente, setCliente] = useState({
     nombre: '',
     apellido: '',
@@ -9,14 +9,23 @@ export const ClienteForm = ({ onClienteCreado }) => {
     telefono: ''
   })
 
+  useEffect(() => {
+    if (clienteEdit) {
+      setCliente(clienteEdit)
+    }
+  }, [clienteEdit])
+
   const handleChange = (e) => {
     setCliente({ ...cliente, [e.target.name]: e.target.value })
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    onClienteCreado(cliente)
-    setCliente({ nombre: '', apellido: '', email: '', telefono: '' })
+    onSubmitCliente(cliente)
+
+    if (!clienteEdit) {
+      setCliente({ nombre: '', apellido: '', email: '', telefono: '' })
+    }
   }
 
   return (
@@ -31,7 +40,7 @@ export const ClienteForm = ({ onClienteCreado }) => {
       <TextField name="telefono" label="Teléfono" onChange={handleChange} value={cliente.telefono} />
 
       <Button type="submit" variant="contained">
-        Agregar
+        {clienteEdit ? 'Guardar cambios' : 'Agregar'}
       </Button>
     </Box>
   )
