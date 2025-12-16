@@ -42,6 +42,7 @@ public class PedidoService {
         Pedido pedido = new Pedido();
         pedido.setFecha(pcdto.fecha());
         pedido.setTotal(pcdto.total());
+        pedido.setDescripcion(pcdto.descripcion());
         pedido.setCliente(cliente);
 
         Pedido guardado = pedidoRepo.save(pedido);
@@ -56,6 +57,7 @@ public class PedidoService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cliente no encontrado"));
         pedido.setFecha(pcdto.fecha());
         pedido.setTotal(pcdto.total());
+        pedido.setDescripcion(pcdto.descripcion());
         pedido.setCliente(cliente);
 
         Pedido actualizado = pedidoRepo.save(pedido);
@@ -71,12 +73,15 @@ public class PedidoService {
 
     // --- mapping helpers --- metodo priv q ayuda a convertir objeto
 
-    private PedidoDTO toDTO(Pedido p) {
+    private PedidoDTO toDTO(Pedido pedido) {
         return new PedidoDTO(
-                p.getId(),
-                p.getFecha(),
-                p.getTotal(),
-                p.getCliente() != null ? p.getCliente().getId() : null
+                pedido.getId(),
+                pedido.getFecha(),
+                pedido.getTotal(),
+                pedido.getDescripcion(),
+                pedido.getCliente().getId(),
+                pedido.getCliente().getNombre(),
+                pedido.getCliente().getApellido()
         );
     }
 }

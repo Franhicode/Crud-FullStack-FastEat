@@ -21,9 +21,10 @@ public class Pedido {
     private Long id;
 
     private LocalDate fecha;
+    private String descripcion;
     private double total;
 
     @ManyToOne
-    @JoinColumn(name = "cliente_id")
+    @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 }
