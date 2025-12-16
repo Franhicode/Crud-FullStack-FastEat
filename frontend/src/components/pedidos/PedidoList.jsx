@@ -1,58 +1,43 @@
-import React, { useEffect, useState } from 'react'
-import { deletePedido, getPeiddos } from '../../api/PeiddosApi'
-import { Button, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
-import { ConfirmDialog } from '../common/confirmDialog'
+import { Table, TableBody, TableCell, TableHead, TableRow, Button, TextField } from '@mui/material'
+import { useState } from 'react'
 
-export const PedidoList = () => {
+export const PedidoList = ({ pedidos = [], onDelete }) => {
+  const [busqueda, setBusqueda] = useState('')
 
-    const [pedidos, setPedidos] = useState([])
-    const [open, setOpen] = useState(false)
-    const [selectedId, setSelectedId] = useState(null)
-
-    useEffect(() => {
-       loadPedidos()
-    }, [])
-
-    const loadPedidos = async () => {
-        const res = await getPeiddos();
-        setPedidos(res.data);
-    };
-
-    const handleDelete = async () => {
-        await deletePedido(selectedId);
-        setOpen(false);
-        loadPedidos();
-    };
+  const filtrados = pedidos.filter(p =>
+    p.descripcion.toLowerCase().includes(busqueda.toLowerCase()) ||
+    `${p.nombre} ${p.apellido}`.toLowerCase().includes(busqueda.toLowerCase())
+  )
 
   return (
     <>
-       <Typography variant="h5" gutterBottom>
-        Pedidos
-      </Typography>
+      <TextField
+        label="Buscar pedido"
+        fullWidth
+        sx={{ mb: 2 }}
+        onChange={(e) => setBusqueda(e.target.value)}
+      />
 
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Fecha</TableCell>
-            <TableCell>Total</TableCell>
+            <TableCell>Pedido</TableCell>
             <TableCell>Cliente</TableCell>
+            <TableCell>Total</TableCell>
             <TableCell />
           </TableRow>
         </TableHead>
 
         <TableBody>
-          {pedidos.map((p) => (
+          {filtrados.map(p => (
             <TableRow key={p.id}>
-              <TableCell>{p.fecha}</TableCell>
+              <TableCell>{p.descripcion}</TableCell>
+              <TableCell>{p.nombre} {p.apellido}</TableCell>
               <TableCell>${p.total}</TableCell>
-              <TableCell>{p.clienteNombre}</TableCell>
               <TableCell>
                 <Button
                   color="error"
-                  onClick={() => {
-                    setSelectedId(p.id);
-                    setOpen(true);
-                  }}
+                  onClick={() => onDelete(p.id)}
                 >
                   Eliminar
                 </Button>
@@ -61,13 +46,6 @@ export const PedidoList = () => {
           ))}
         </TableBody>
       </Table>
-
-      <ConfirmDialog
-        open={open}
-        onClose={() => setOpen(false)}
-        onConfirm={handleDelete}
-        text="¿Seguro que querés eliminar este pedido?"
-      />
     </>
   )
 }

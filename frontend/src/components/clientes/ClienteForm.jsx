@@ -1,34 +1,38 @@
-import React from 'react'
-import { useForm } from 'react-hook-form'
-import { createCliente } from '../../api/ClientesApi';
-import { Box, Button, TextField } from '@mui/material';
+import { Button, TextField, Box } from '@mui/material'
+import { useState } from 'react'
 
-export const ClienteForm = () => {
+export const ClienteForm = ({ onClienteCreado }) => {
+  const [cliente, setCliente] = useState({
+    nombre: '',
+    apellido: '',
+    email: '',
+    telefono: ''
+  })
 
-    const { register, handleSubmit, reset} = useForm();
+  const handleChange = (e) => {
+    setCliente({ ...cliente, [e.target.name]: e.target.value })
+  }
 
-    const onSubmit = (data) => {
-        createCliente(data)
-          .then(() => {
-            alert('Cliente creado con exito');
-            reset();
-            //AGREGAR evento para recargar lista 
-          })
-          .catch(err => {
-            console.error(err);
-            alert('Error al crear el cliente');
-          });
-    };
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    onClienteCreado(cliente)
+    setCliente({ nombre: '', apellido: '', email: '', telefono: '' })
+  }
 
   return (
-    <>
-     <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-       <TextField label="Nombre" {...register('nombre')} required />
-       <TextField label="Apellido" {...register('apellido')} required />
-       <TextField label="Email" {...register('email')} type="email" required />
-       <TextField label="Teléfono" {...register('telefono')} required />
-       <Button variant="contained" type="submit">Crear Cliente</Button>
-     </Box>
-    </>
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{ display: 'flex', gap: 2, mb: 3 }}
+    >
+      <TextField name="nombre" label="Nombre" required onChange={handleChange} value={cliente.nombre} />
+      <TextField name="apellido" label="Apellido" required onChange={handleChange} value={cliente.apellido} />
+      <TextField name="email" label="Email" onChange={handleChange} value={cliente.email} />
+      <TextField name="telefono" label="Teléfono" onChange={handleChange} value={cliente.telefono} />
+
+      <Button type="submit" variant="contained">
+        Agregar
+      </Button>
+    </Box>
   )
 }

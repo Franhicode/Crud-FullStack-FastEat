@@ -1,11 +1,10 @@
-import { AppBar, Button, Container, Toolbar, Typography } from '@mui/material'
-import React from 'react'
+import { AppBar, Button, Container, Toolbar, Typography, Box } from '@mui/material'
 import { Link, Outlet } from 'react-router-dom'
 
 export const Layout = () => {
   return (
     <>
-     <AppBar position="static">
+      <AppBar position="fixed">
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             FastEat
@@ -23,9 +22,14 @@ export const Layout = () => {
         </Toolbar>
       </AppBar>
 
-      <Container sx={{ mt: 4 }}>
-        <Outlet />
-      </Container>
+      {/* Spacer: evita superposición */}
+      <Toolbar />
+
+      <Box component="main">
+        <Container sx={{ py: 3 }}>
+          <Outlet />
+        </Container>
+      </Box>
     </>
   )
 }

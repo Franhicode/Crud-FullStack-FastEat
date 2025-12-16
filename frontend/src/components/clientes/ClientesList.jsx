@@ -1,48 +1,55 @@
-import React, { useEffect, useState } from 'react'
-import { deleteCliente, getClientes } from '../../api/ClientesApi';
-import { Divider, IconButton, List, ListItem, ListItemText } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Table, TableBody, TableCell, TableHead, TableRow, Button, TextField } from '@mui/material'
+import { useState } from 'react'
 
-export const ClientesList = () => {
+export const ClientesList = ({ clientes = [], onDelete }) => {
+  const [busqueda, setBusqueda] = useState('')
 
-    const [clientes, setClientes] = useState([]);
-
-    const load = () => {
-        getClientes()
-         .then(res => setClientes(res.data))
-         .catch(err => console.error(err)); 
-    };
-
-    useEffect(() => {
-      load();
-    }, []);
-    
-    const handleDelete = (id) => {
-        if (!confirm('Estas seguro de eliminar este cliente?')) return;
-        deleteCliente(id).then(() => load());
-    };
+  const filtrados = clientes.filter(
+    c =>
+      c.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+      c.apellido.toLowerCase().includes(busqueda.toLowerCase())
+  )
 
   return (
     <>
-     <List>
-        {clientes.map(c => (
-             <React.Fragment key={c.id}>
-                <ListItem
-                  secondaryAction={
-                    <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(c.id)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  }
+      <TextField
+        label="Buscar cliente"
+        fullWidth
+        sx={{ mb: 2 }}
+        value={busqueda}
+        onChange={(e) => setBusqueda(e.target.value)}
+      />
+
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Nombre</TableCell>
+            <TableCell>Apellido</TableCell>
+            <TableCell>Email</TableCell>
+            <TableCell>Teléfono</TableCell>
+            <TableCell />
+          </TableRow>
+        </TableHead>
+
+        <TableBody>
+          {filtrados.map((c) => (
+            <TableRow key={c.id}>
+              <TableCell>{c.nombre}</TableCell>
+              <TableCell>{c.apellido}</TableCell>
+              <TableCell>{c.email}</TableCell>
+              <TableCell>{c.telefono}</TableCell>
+              <TableCell>
+                <Button
+                  color="error"
+                  onClick={() => onDelete(c.id)}
                 >
-                    <ListItemText 
-                    primary={c.nombre}
-                    secondary={`${c.email} · ${c.telefono}`} 
-                    />
-                </ListItem>
-                <Divider />
-             </React.Fragment>
-        ))}
-     </List>
+                  Eliminar
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </>
-  );
+  )
 }
