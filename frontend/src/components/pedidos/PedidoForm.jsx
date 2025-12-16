@@ -1,9 +1,8 @@
 import { Box, Button, MenuItem, TextField } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { createPedido, updatePedido } from '../../api/PedidosApi'
 import { getClientes } from '../../api/ClientesApi'
 
-export const PedidoForm = ({ pedidoEditando, onSaved }) => {
+export const PedidoForm = ({ pedidoEdit, onSubmitPedido }) => {
   const [pedido, setPedido] = useState({
     descripcion: '',
     total: '',
@@ -18,28 +17,23 @@ export const PedidoForm = ({ pedidoEditando, onSaved }) => {
   }, [])
 
   useEffect(() => {
-    if (pedidoEditando) {
+    if (pedidoEdit) {
       setPedido({
-        descripcion: pedidoEditando.descripcion ?? '',
-        total: pedidoEditando.total ?? '',
-        fecha: pedidoEditando.fecha ?? '',
-        clienteId: pedidoEditando.clienteId
+        descripcion: pedidoEdit.descripcion ?? '',
+        total: pedidoEdit.total ?? '',
+        fecha: pedidoEdit.fecha ?? '',
+        clienteId: pedidoEdit.clienteId ?? ''
       })
     }
-  }, [pedidoEditando])
+  }, [pedidoEdit])
 
   const handleChange = (e) => {
     setPedido({ ...pedido, [e.target.name]: e.target.value })
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
-
-    if (pedidoEditando) {
-      await updatePedido(pedidoEditando.id, pedido)
-    } else {
-      await createPedido(pedido)
-    }
+    onSubmitPedido({ ...pedido, id: pedidoEdit?.id })
 
     setPedido({
       descripcion: '',
@@ -47,8 +41,6 @@ export const PedidoForm = ({ pedidoEditando, onSaved }) => {
       fecha: '',
       clienteId: ''
     })
-
-    onSaved()
   }
 
   return (
@@ -99,7 +91,7 @@ export const PedidoForm = ({ pedidoEditando, onSaved }) => {
       </TextField>
 
       <Button type="submit" variant="contained">
-        {pedidoEditando ? 'Actualizar' : 'Crear'}
+        {pedidoEdit ? 'Actualizar' : 'Crear'}
       </Button>
     </Box>
   )
