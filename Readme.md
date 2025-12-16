@@ -4,6 +4,12 @@ FastEat es una aplicación **Full Stack** desarrollada como proyecto de práctic
 
 El objetivo del proyecto fue integrar un **backend en Java con Spring Boot** y un **frontend moderno en React**, aplicando buenas prácticas, separación de responsabilidades y una experiencia de usuario clara.
 
+## 🌱 Branches
+
+- `main`: desarrollo local con H2
+- `docker`: backend y base de datos con Docker
+- `deploy`: proyecto deployado en Render + Vercel
+
 ---
 
 ## 🚀 Tecnologías utilizadas
