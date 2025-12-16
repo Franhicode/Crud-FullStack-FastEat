@@ -1,7 +1,7 @@
 import { Grid, Paper } from '@mui/material'
 import React from 'react'
-import { ClienteForm } from '../components/clienentes/ClienteForm';
-import { ClientesList } from '../components/clienentes/ClientesList';
+import { ClienteForm } from '../components/clientes/ClienteForm';
+import { ClientesList } from '../components/clientes/ClientesList';
 
 export const ClientesPage = () => {
     return (

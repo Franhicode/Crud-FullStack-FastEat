@@ -1,7 +1,7 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material'
 import React from 'react'
 
-export const confirmDialog = ({ open, onClose, onConfirm, text }) => {
+export const ConfirmDialog = ({ open, onClose, onConfirm, text }) => {
   return (
     <>
      <Dialog open={open} onClose={onClose}>

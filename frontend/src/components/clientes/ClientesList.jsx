@@ -30,7 +30,7 @@ export const ClientesList = () => {
                 <ListItem
                   secondaryAction={
                     <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(c.id)}>
-                        <DeleteIcon />
+                      <DeleteIcon />
                     </IconButton>
                   }
                 >

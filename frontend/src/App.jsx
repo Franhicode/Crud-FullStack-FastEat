@@ -3,6 +3,7 @@ import React from 'react'
 import { Link, Route, Routes } from 'react-router-dom'
 import { PedidosPage } from './pages/PedidosPage'
 import { ClientesPage } from './pages/ClientesPage'
+import { Home } from './pages/Home'
 
 export const App = () => {
   return (

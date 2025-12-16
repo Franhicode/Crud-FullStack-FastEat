@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { deletePedido, getPeiddos } from '../../api/PeiddosApi'
 import { Button, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
+import { ConfirmDialog } from '../common/confirmDialog'
 
 export const PedidoList = () => {
 
