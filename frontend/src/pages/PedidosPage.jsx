@@ -6,6 +6,7 @@ import { PedidoList } from '../components/pedidos/PedidoList'
 
 export const PedidosPage = () => {
   const [pedidos, setPedidos] = useState([])
+  const [pedidoEditando, setPedidoEditando] = useState(null)
 
   const loadPedidos = async () => {
     const res = await getPedidos()
@@ -22,14 +23,31 @@ export const PedidosPage = () => {
     loadPedidos()
   }
 
+  const handleEdit = (pedido) => {
+    setPedidoEditando(pedido)
+  }
+
+  const handleSaved = () => {
+    setPedidoEditando(null)
+    loadPedidos()
+  }
+
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
         Pedidos (Cocina)
       </Typography>
 
-      <PedidoForm onCreated={loadPedidos} />
-      <PedidoList pedidos={pedidos} onDelete={handleDelete} />
+      <PedidoForm
+        pedidoEditando={pedidoEditando}
+        onSaved={handleSaved}
+      />
+
+      <PedidoList
+        pedidos={pedidos}
+        onDelete={handleDelete}
+        onEdit={handleEdit}
+      />
     </Box>
   )
 }
