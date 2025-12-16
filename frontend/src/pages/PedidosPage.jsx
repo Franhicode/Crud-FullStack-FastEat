@@ -130,8 +130,8 @@ export const PedidosPage = () => {
       {!loading && !error && (
         <>
           <PedidoForm
-            pedidoEditando={pedidoEdit}
-            onSaved={handleSubmitPedido}
+            pedidoEdit={pedidoEdit}
+            onSubmitPedido={handleSubmitPedido}
           />
 
           <PedidoList
