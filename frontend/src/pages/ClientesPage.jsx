@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Box, Typography } from '@mui/material'
-
 import { AppSnackbar } from '../components/common/AppSnackbar'
-import { ConfirmDialog } from '../components/common/ConfirmDialog';
+import { ConfirmDialog } from '../components/common/ConfirmDialog.jsx'
 import { Loading } from '../components/common/Loading'
 import { ErrorState } from '../components/common/ErrorState'
-
 import { ClienteForm } from '../components/clientes/ClienteForm'
 import { ClientesList } from '../components/clientes/ClientesList'
 
